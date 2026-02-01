@@ -13,7 +13,7 @@ public interface UserService {
 
     User getByUsername(String username);
 
-    User register(User newUser);
+    User register(User newUser) throws Exception;
 
     User updateUser(Long userId, User updateUser);
 

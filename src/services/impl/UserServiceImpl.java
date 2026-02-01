@@ -1,6 +1,7 @@
 package services.impl;
 
 import clients.ApiClient;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import enums.UserStatus;
@@ -31,8 +32,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(User newUser) {
-        return null;
+    public User register(User newUser) throws Exception {
+        String newUserJson = mapper.writeValueAsString(newUser);
+        String response = ApiClient.post("/users", newUserJson);
+        return mapper.readValue(response, User.class);
     }
 
     @Override

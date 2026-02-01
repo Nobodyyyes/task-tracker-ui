@@ -1,7 +1,9 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import enums.UserStatus;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
     private Long id;
     private String lastname;
