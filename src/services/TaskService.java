@@ -1,6 +1,5 @@
 package services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import enums.TaskStatus;
 import models.Task;
 
@@ -10,13 +9,13 @@ public interface TaskService {
 
     List<Task> getAllTasksByUserId(Long userId) throws Exception;
 
-    Task getByTaskId(Long taskId);
+    Task getByTaskId(Long taskId) throws Exception;
 
     Task createTask(Task newTask) throws Exception;
 
-    Task updateTask(Task updateTask);
+    Task updateTask(Task updateTask) throws Exception;
 
     Task changeTaskStatus(Long taskId, TaskStatus taskStatus);
 
-    void deleteTask(Long taskId);
+    void deleteTask(Long taskId) throws Exception;
 }

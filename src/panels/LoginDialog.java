@@ -37,41 +37,45 @@ public class LoginDialog extends JDialog {
         buttonPanel.add(btnRegister);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        btnLogin.addActionListener(e -> {
-            String username = usernameField.getText().trim();
-            String password = new String(passwordField.getPassword());
+        btnLogin.addActionListener(e -> authorization(usernameField, passwordField, authService));
+        btnRegister.addActionListener(e -> registration(userService));
+    }
 
-            if(username.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                        "Введите username и password",
-                        "Ошибка",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+    private void authorization(JTextField usernameField, JPasswordField passwordField, AuthService authService) {
+        String username = usernameField.getText().trim();
+        String password = new String(passwordField.getPassword());
 
-            try {
-                User user = authService.login(username, password);
-                CurrentUser.set(user);
-                this.loggedUser = user;
-                JOptionPane.showMessageDialog(this,
-                        "Вход успешен! Добро пожаловать, " + loggedUser.getUsername());
-                dispose();
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,
-                        "Ошибка авторизации: " + ex.getMessage(),
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Введите username и password",
+                    "Ошибка",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-        btnRegister.addActionListener(e -> {
-            RegistrationDialog regDialog = new RegistrationDialog(this, userService);
-            User user = regDialog.showDialog();
-            if(user != null) {
-                this.loggedUser = user;
-                dispose();
-            }
-        });
+        try {
+            User user = authService.login(username, password);
+            System.out.println("user: " + user);
+            CurrentUser.set(user);
+            this.loggedUser = user;
+            JOptionPane.showMessageDialog(this,
+                    "Login successfully!");
+            dispose();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Authorization error: " + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void registration(UserService userService) {
+        RegistrationDialog regDialog = new RegistrationDialog(this, userService);
+        User user = regDialog.showDialog();
+        if (user != null) {
+            this.loggedUser = user;
+            dispose();
+        }
     }
 
     public User showDialog() {

@@ -82,4 +82,17 @@ public class User {
     public void setUserStatus(UserStatus userStatus) {
         this.userStatus = userStatus;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", lastname='" + lastname + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", userStatus=" + userStatus +
+                '}';
+    }
 }

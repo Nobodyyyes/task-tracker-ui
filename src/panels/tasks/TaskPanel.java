@@ -1,4 +1,4 @@
-package panels.task;
+package panels.tasks;
 
 import models.Task;
 import services.TaskService;
@@ -31,12 +31,14 @@ public class TaskPanel extends JPanel {
         JTable table = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(table);
 
-        JButton btnCreate = new JButton("Создать задачу");
+        JButton btnCreate = new JButton("Создать");
         JButton btnRefresh = new JButton("Обновить");
+        JButton btnDelete = new JButton("Удалить");
 
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(btnCreate);
         bottomPanel.add(btnRefresh);
+        bottomPanel.add(btnDelete);
 
         add(scrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
@@ -45,12 +47,12 @@ public class TaskPanel extends JPanel {
 
         btnRefresh.addActionListener(e -> loadTasks());
         btnCreate.addActionListener(e -> createTask());
+        btnDelete.addActionListener(e-> deleteTask());
     }
 
     private void loadTasks() {
         try {
-            Long currentUserId = CurrentUser.getId();
-            List<Task> tasks = taskService.getAllTasksByUserId(currentUserId);
+            List<Task> tasks = taskService.getAllTasksByUserId(CurrentUser.getId());
             tableModel.setRowCount(0);
 
             for (Task t : tasks) {
@@ -79,5 +81,9 @@ public class TaskPanel extends JPanel {
         if (newTask != null) {
             loadTasks();
         }
+    }
+
+    private void deleteTask() {
+
     }
 }

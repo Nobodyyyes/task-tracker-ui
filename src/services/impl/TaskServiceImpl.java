@@ -16,14 +16,15 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<Task> getAllTasksByUserId(Long userId) throws Exception {
         return mapper.readValue(
-                ApiClient.get("/tasks/%s".formatted(userId)),
+                ApiClient.get("/tasks/users/%s".formatted(userId)),
                 new TypeReference<List<Task>>() {
         });
     }
 
     @Override
-    public Task getByTaskId(Long taskId) {
-        return null;
+    public Task getByTaskId(Long taskId) throws Exception {
+        String response = ApiClient.get("/tasks/%s".formatted(taskId));
+        return mapper.readValue(response, Task.class);
     }
 
     @Override
@@ -34,8 +35,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task updateTask(Task updateTask) {
-        return null;
+    public Task updateTask(Task updateTask) throws Exception {
+        String updateTaskJson = mapper.writeValueAsString(updateTask);
+        String response = ApiClient.put("/tasks", updateTaskJson);
+        return mapper.readValue(response, Task.class);
     }
 
     @Override
@@ -44,7 +47,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void deleteTask(Long taskId) {
-
+    public void deleteTask(Long taskId) throws Exception {
+        ApiClient.delete("/tasks/%s".formatted(taskId));
     }
 }

@@ -34,4 +34,29 @@ public class ApiClient {
 
         return response.body();
     }
+
+    public static String put(String path, String jsonBody) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + path))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        HttpResponse<String> response =
+                client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        return response.body();
+    }
+
+    public static String delete(String path) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + path))
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response =
+                client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        return response.body();
+    }
 }
