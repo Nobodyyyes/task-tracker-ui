@@ -1,7 +1,6 @@
 package panels.habits;
 
 import models.Habit;
-import org.apache.logging.log4j.Logger;
 import panels.ActionButtonEditor;
 import panels.ActionButtonRenderer;
 import services.HabitService;
@@ -14,8 +13,6 @@ import java.util.List;
 
 public class HabitPanel extends JPanel {
 
-//    private static final Logger =
-
     private final DefaultTableModel tableModel;
     private final HabitService habitService;
 
@@ -24,7 +21,7 @@ public class HabitPanel extends JPanel {
         setLayout(new BorderLayout());
 
         tableModel = new DefaultTableModel(
-                new String[] {
+                new String[]{
                         "ID",
                         "Название",
                         "Описание",
@@ -33,14 +30,15 @@ public class HabitPanel extends JPanel {
                         "Дата конца",
                         "Действие"
                 }, 0
-        );
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 6;
+            }
+        };
 
         JTable table = new JTable(tableModel);
-        table.getColumn("Действие").setCellRenderer(new ActionButtonRenderer());
-        table.getColumn("Действие").setCellEditor(new ActionButtonEditor(table, habitService, this));
-        table.getColumnModel().getColumn(0).setMinWidth(0);
-        table.getColumnModel().getColumn(0).setMaxWidth(0);
-        table.getColumnModel().getColumn(0).setWidth(0);
+        tableSettings(table);
 
         JScrollPane scrollPane = new JScrollPane(table);
 
@@ -79,6 +77,17 @@ public class HabitPanel extends JPanel {
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void tableSettings(JTable table) {
+        table.getColumn("Действие").setCellRenderer(new ActionButtonRenderer());
+        table.getColumn("Действие").setCellEditor(new ActionButtonEditor(table, habitService, this));
+        table.getColumn("Действие").setPreferredWidth(220);
+        table.getColumn("Действие").setMinWidth(180);
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setWidth(0);
+        table.setRowHeight(30);
     }
 
     private void createHabit() {
