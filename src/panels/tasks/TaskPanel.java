@@ -77,6 +77,7 @@ public class TaskPanel extends JPanel {
                 (Frame) SwingUtilities.getWindowAncestor(this),
                 taskService
         );
+
         Task newTask = createDialog.showDialog();
         if (newTask != null) {
             loadTasks();

@@ -3,7 +3,10 @@ package services.impl;
 import clients.ApiClient;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import models.Habit;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import services.HabitService;
 
 import java.util.List;
@@ -11,6 +14,12 @@ import java.util.List;
 public class HabitServiceImpl implements HabitService {
 
     private final ObjectMapper mapper = new ObjectMapper();
+
+    private static final Logger log = LogManager.getLogger(HabitServiceImpl.class);
+
+    public HabitServiceImpl() {
+        mapper.registerModule(new JavaTimeModule());
+    }
 
     @Override
     public Habit createHabit(Habit newHabit) throws Exception {
@@ -28,7 +37,7 @@ public class HabitServiceImpl implements HabitService {
     @Override
     public List<Habit> getAllHabitsByUserId(Long userId) throws Exception {
         String response = ApiClient.get("/habits/users/%s".formatted(userId));
-        System.out.println("HABITS RESPONSE = " + response);
+        log.info("HABITS RESPONSE = {}", response);
         return mapper.readValue(response, new TypeReference<>() {
         });
     }

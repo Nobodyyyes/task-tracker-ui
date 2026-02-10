@@ -1,5 +1,7 @@
 package panels;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import panels.habits.HabitPanel;
 import panels.tasks.TaskPanel;
 import services.HabitService;
@@ -8,6 +10,8 @@ import services.TaskService;
 import javax.swing.*;
 
 public class MainFrame extends JFrame {
+
+    private static final Logger log = LogManager.getLogger(MainFrame.class);
 
     public MainFrame(TaskService taskService, HabitService habitService) {
         setTitle("Система управления задачами");
@@ -20,5 +24,7 @@ public class MainFrame extends JFrame {
         tabs.addTab("Привычки", new HabitPanel(habitService));
 
         add(tabs);
+
+        log.info("here");
     }
 }

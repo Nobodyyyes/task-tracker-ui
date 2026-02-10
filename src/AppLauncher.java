@@ -1,3 +1,4 @@
+import com.fasterxml.jackson.databind.Module;
 import panels.LoginDialog;
 import panels.MainFrame;
 import services.AuthService;

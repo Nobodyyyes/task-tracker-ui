@@ -1,6 +1,9 @@
 package panels.habits;
 
 import models.Habit;
+import org.apache.logging.log4j.Logger;
+import panels.ActionButtonEditor;
+import panels.ActionButtonRenderer;
 import services.HabitService;
 import utils.CurrentUser;
 
@@ -11,6 +14,8 @@ import java.util.List;
 
 public class HabitPanel extends JPanel {
 
+//    private static final Logger =
+
     private final DefaultTableModel tableModel;
     private final HabitService habitService;
 
@@ -20,25 +25,29 @@ public class HabitPanel extends JPanel {
 
         tableModel = new DefaultTableModel(
                 new String[] {
+                        "ID",
                         "Название",
                         "Описание",
-                        "Периодичьность",
+                        "Периодичность",
                         "Дата начала",
-                        "Дата конца"
+                        "Дата конца",
+                        "Действие"
                 }, 0
         );
 
         JTable table = new JTable(tableModel);
+        table.getColumn("Действие").setCellRenderer(new ActionButtonRenderer());
+        table.getColumn("Действие").setCellEditor(new ActionButtonEditor(table, habitService, this));
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setWidth(0);
+
         JScrollPane scrollPane = new JScrollPane(table);
 
         JButton btnCreate = new JButton("Создать");
-        JButton btnUpdate = new JButton("Обновить");
-        JButton btnDelete = new JButton("Удалить");
 
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(btnCreate);
-        bottomPanel.add(btnUpdate);
-        bottomPanel.add(btnDelete);
 
         add(scrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
@@ -46,22 +55,22 @@ public class HabitPanel extends JPanel {
         loadHabits();
 
         btnCreate.addActionListener(e -> createHabit());
-        btnUpdate.addActionListener(e -> updateHabit());
-        btnDelete.addActionListener(e -> deleteHabit());
     }
 
-    private void loadHabits() {
+    public void loadHabits() {
         try {
             List<Habit> habits = habitService.getAllHabitsByUserId(CurrentUser.getId());
             tableModel.setRowCount(0);
 
             for (Habit habit : habits) {
                 tableModel.addRow(new Object[]{
+                        habit.getId(),
                         habit.getTitle(),
                         habit.getDescription(),
                         habit.getHabitFrequency(),
                         habit.getStartDate(),
-                        habit.getEndDate()
+                        habit.getEndDate(),
+                        ""
                 });
             }
         } catch (Exception e) {
@@ -73,14 +82,14 @@ public class HabitPanel extends JPanel {
     }
 
     private void createHabit() {
+        CreateHabitDialog createHabitDialog = new CreateHabitDialog(
+                (Frame) SwingUtilities.getWindowAncestor(this),
+                habitService
+        );
 
-    }
-
-    private void updateHabit() {
-
-    }
-
-    private void deleteHabit() {
-
+        Habit newHabit = createHabitDialog.showDialog();
+        if (newHabit != null) {
+            loadHabits();
+        }
     }
 }
