@@ -3,8 +3,8 @@ package panels;
 import models.Habit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import panels.habits.CreateHabitDialog;
 import panels.habits.DeleteHabitDialog;
+import panels.habits.EditHabitDialog;
 import panels.habits.HabitPanel;
 import services.HabitService;
 
@@ -16,8 +16,6 @@ public class ActionButtonEditor extends DefaultCellEditor {
     private static final Logger log = LogManager.getLogger(ActionButtonEditor.class);
 
     private final JPanel panel = new JPanel();
-    private final JButton btnEdit = new JButton("Изменить");
-    private final JButton btnDelete = new JButton("Удалить");
 
     private Habit currentHabit;
     private final JTable table;
@@ -31,6 +29,9 @@ public class ActionButtonEditor extends DefaultCellEditor {
         this.table = table;
         this.habitService = habitService;
         this.habitPanel = habitPanel;
+
+        JButton btnEdit = new JButton("Изменить");
+        JButton btnDelete = new JButton("Удалить");
 
         panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
         panel.add(btnEdit);
@@ -48,20 +49,31 @@ public class ActionButtonEditor extends DefaultCellEditor {
             Long habitId = (Long) table.getValueAt(row, 0);
             currentHabit = habitService.getById(habitId);
         } catch (Exception e) {
-
+            log.info("Не знаю что за ошибка...");
         }
 
         return panel;
     }
 
     private void updateHabit() {
-        CreateHabitDialog dialog = new CreateHabitDialog(
+        if (currentHabit == null) {
+            JOptionPane.showMessageDialog(table,
+                    "Не удалось определить привычку для редактирования",
+                    "Ошибка",
+                    JOptionPane.ERROR_MESSAGE);
+            fireEditingStopped();
+            return;
+        }
+
+        EditHabitDialog dialog = new EditHabitDialog(
                 (Frame) SwingUtilities.getWindowAncestor(table),
-                habitService
+                habitService,
+                currentHabit
         );
 
-        Habit updatedHabit = dialog.showDialog();
-        if (updatedHabit != null) {
+        dialog.setVisible(true);
+
+        if (dialog.isSaved()) {
             habitPanel.loadHabits();
         }
 
@@ -71,7 +83,7 @@ public class ActionButtonEditor extends DefaultCellEditor {
     private void deleteHabit() {
         if (currentHabit == null) {
             JOptionPane.showMessageDialog(table,
-                    "Не удалось определить привычку",
+                    "Не удалось определить привычку для удаления",
                     "Ошибка",
                     JOptionPane.ERROR_MESSAGE);
             fireEditingStopped();

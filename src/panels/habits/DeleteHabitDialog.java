@@ -14,27 +14,26 @@ public class DeleteHabitDialog extends JDialog {
         setLayout(new BorderLayout(10, 10));
 
         JLabel message = new JLabel(
-                "<html>Вы действительно хотите удалить привычку:<br><b>\""
-                        + habitTitle + "\"</b>?</html>",
+                "Вы действительно хотите удалить привычку: %s?".formatted(habitTitle),
                 SwingConstants.CENTER
         );
 
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.add(message, BorderLayout.CENTER);
 
-        JButton btnYes = new JButton("Да, удалить");
-        JButton btnNo = new JButton("Отмена");
+        JButton btnConfirm = new JButton("Да");
+        JButton btnCancel = new JButton("Отмена");
 
         JPanel buttons = new JPanel();
-        buttons.add(btnNo);
-        buttons.add(btnYes);
+        buttons.add(btnConfirm);
+        buttons.add(btnCancel);
 
-        btnNo.addActionListener(e -> {
+        btnCancel.addActionListener(e -> {
             confirmed = false;
             dispose();
         });
 
-        btnYes.addActionListener(e -> {
+        btnConfirm.addActionListener(e -> {
             confirmed = true;
             dispose();
         });
