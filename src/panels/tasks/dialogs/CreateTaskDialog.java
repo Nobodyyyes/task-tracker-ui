@@ -1,8 +1,10 @@
-package panels.tasks;
+package panels.tasks.dialogs;
 
 import enums.TaskPriority;
 import enums.TaskStatus;
 import models.Task;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import services.TaskService;
 import utils.CurrentUser;
 
@@ -11,6 +13,8 @@ import java.awt.*;
 import java.time.LocalDateTime;
 
 public class CreateTaskDialog extends JDialog {
+
+    private static final Logger log = LogManager.getLogger(CreateTaskDialog.class);
 
     private Task createdTask;
 
@@ -101,6 +105,7 @@ public class CreateTaskDialog extends JDialog {
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Ошибка создания задачи: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            log.info("Ошибка создания задачи: {}", ex.getMessage());
         }
     }
 

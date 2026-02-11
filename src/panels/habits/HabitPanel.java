@@ -1,8 +1,7 @@
 package panels.habits;
 
 import models.Habit;
-import panels.ActionButtonEditor;
-import panels.ActionButtonRenderer;
+import panels.habits.dialogs.CreateHabitDialog;
 import services.HabitService;
 import utils.CurrentUser;
 
@@ -38,9 +37,8 @@ public class HabitPanel extends JPanel {
         };
 
         JTable table = new JTable(tableModel);
-        tableSettings(table);
-
         JScrollPane scrollPane = new JScrollPane(table);
+        tableSettings(table);
 
         JButton btnCreate = new JButton("Создать");
 
@@ -53,6 +51,17 @@ public class HabitPanel extends JPanel {
         loadHabits();
 
         btnCreate.addActionListener(e -> createHabit());
+    }
+
+    private void tableSettings(JTable table) {
+        table.getColumn("Действие").setCellRenderer(new HabitActionButtonRenderer());
+        table.getColumn("Действие").setCellEditor(new HabitActionButtonEditor(table, habitService, this));
+        table.getColumn("Действие").setPreferredWidth(220);
+        table.getColumn("Действие").setMinWidth(180);
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setWidth(0);
+        table.setRowHeight(30);
     }
 
     public void loadHabits() {
@@ -77,17 +86,6 @@ public class HabitPanel extends JPanel {
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    private void tableSettings(JTable table) {
-        table.getColumn("Действие").setCellRenderer(new ActionButtonRenderer());
-        table.getColumn("Действие").setCellEditor(new ActionButtonEditor(table, habitService, this));
-        table.getColumn("Действие").setPreferredWidth(220);
-        table.getColumn("Действие").setMinWidth(180);
-        table.getColumnModel().getColumn(0).setMinWidth(0);
-        table.getColumnModel().getColumn(0).setMaxWidth(0);
-        table.getColumnModel().getColumn(0).setWidth(0);
-        table.setRowHeight(30);
     }
 
     private void createHabit() {

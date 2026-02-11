@@ -1,4 +1,4 @@
-package panels.habits;
+package panels.habits.dialogs;
 
 import enums.HabitFrequency;
 import models.Habit;
@@ -54,8 +54,8 @@ public class CreateHabitDialog extends JDialog {
         add(panel, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        String title = titleField.getText().trim();
-        String description = descriptionField.getText().trim();
+        String title = titleField.getText();
+        String description = descriptionField.getText();
         HabitFrequency habitFrequency = (HabitFrequency) habitFrequencyCombo.getSelectedItem();
         LocalDateTime startDate = LocalDateTime.ofInstant(
                 ((java.util.Date) startDateSpinner.getValue()).toInstant(),

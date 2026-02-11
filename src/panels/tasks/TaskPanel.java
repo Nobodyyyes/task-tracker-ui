@@ -1,6 +1,7 @@
 package panels.tasks;
 
 import models.Task;
+import panels.tasks.dialogs.CreateTaskDialog;
 import services.TaskService;
 import utils.CurrentUser;
 
@@ -20,25 +21,26 @@ public class TaskPanel extends JPanel {
 
         tableModel = new DefaultTableModel(
                 new String[]{
+                        "ID",
                         "Название",
                         "Описание",
                         "Статус",
                         "Приоритет",
-                        "Дедлайн"
+                        "Дедлайн",
+                        "Действие"
                 }, 0
         );
 
         JTable table = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(table);
+        tableSettings(table);
 
         JButton btnCreate = new JButton("Создать");
         JButton btnRefresh = new JButton("Обновить");
-        JButton btnDelete = new JButton("Удалить");
 
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(btnCreate);
         bottomPanel.add(btnRefresh);
-        bottomPanel.add(btnDelete);
 
         add(scrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
@@ -47,21 +49,33 @@ public class TaskPanel extends JPanel {
 
         btnRefresh.addActionListener(e -> loadTasks());
         btnCreate.addActionListener(e -> createTask());
-        btnDelete.addActionListener(e-> deleteTask());
     }
 
-    private void loadTasks() {
+    private void tableSettings(JTable table) {
+        table.getColumn("Действие").setCellRenderer(new TaskActionButtonRenderer());
+        table.getColumn("Действие").setCellEditor(new TaskActionButtonEditor(table, taskService, this));
+        table.getColumn("Действие").setPreferredWidth(220);
+        table.getColumn("Действие").setMinWidth(180);
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setWidth(0);
+        table.setRowHeight(30);
+    }
+
+    public void loadTasks() {
         try {
             List<Task> tasks = taskService.getAllTasksByUserId(CurrentUser.getId());
             tableModel.setRowCount(0);
 
-            for (Task t : tasks) {
+            for (Task task : tasks) {
                 tableModel.addRow(new Object[]{
-                        t.getTitle(),
-                        t.getDescription(),
-                        t.getTaskStatus(),
-                        t.getTaskPriority(),
-                        t.getDueDate()
+                        task.getId(),
+                        task.getTitle(),
+                        task.getDescription(),
+                        task.getTaskStatus(),
+                        task.getTaskPriority(),
+                        task.getDueDate(),
+                        ""
                 });
             }
         } catch (Exception ex) {
@@ -82,9 +96,5 @@ public class TaskPanel extends JPanel {
         if (newTask != null) {
             loadTasks();
         }
-    }
-
-    private void deleteTask() {
-
     }
 }

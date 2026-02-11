@@ -1,19 +1,18 @@
-package panels;
+package panels.habits;
 
 import models.Habit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import panels.habits.DeleteHabitDialog;
-import panels.habits.EditHabitDialog;
-import panels.habits.HabitPanel;
+import panels.habits.dialogs.DeleteHabitDialog;
+import panels.habits.dialogs.EditHabitDialog;
 import services.HabitService;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class ActionButtonEditor extends DefaultCellEditor {
+public class HabitActionButtonEditor extends DefaultCellEditor {
 
-    private static final Logger log = LogManager.getLogger(ActionButtonEditor.class);
+    private static final Logger log = LogManager.getLogger(HabitActionButtonEditor.class);
 
     private final JPanel panel = new JPanel();
 
@@ -22,9 +21,9 @@ public class ActionButtonEditor extends DefaultCellEditor {
     private final HabitService habitService;
     private final HabitPanel habitPanel;
 
-    public ActionButtonEditor(JTable table,
-                              HabitService habitService,
-                              HabitPanel habitPanel) {
+    public HabitActionButtonEditor(JTable table,
+                                   HabitService habitService,
+                                   HabitPanel habitPanel) {
         super(new JCheckBox());
         this.table = table;
         this.habitService = habitService;
@@ -62,7 +61,6 @@ public class ActionButtonEditor extends DefaultCellEditor {
                     "Ошибка",
                     JOptionPane.ERROR_MESSAGE);
             fireEditingStopped();
-            return;
         }
 
         EditHabitDialog dialog = new EditHabitDialog(

@@ -1,4 +1,4 @@
-package panels.habits;
+package panels.habits.dialogs;
 
 import enums.HabitFrequency;
 import models.Habit;
@@ -79,7 +79,7 @@ public class EditHabitDialog extends JDialog {
         return formPanel;
     }
 
-    private LocalDate collectLocalDate(JSpinner dateSpinner) {
+    private LocalDate modifyToLocalDate(JSpinner dateSpinner) {
         return LocalDate.ofInstant(
                 ((java.util.Date) dateSpinner.getValue()).toInstant(),
                 java.time.ZoneId.systemDefault());
@@ -87,8 +87,8 @@ public class EditHabitDialog extends JDialog {
 
     private void saveChanges() {
         try {
-            LocalDate startDate = collectLocalDate(startDateSpinner);
-            LocalDate endDate = collectLocalDate(endDateSpinner);
+            LocalDate startDate = modifyToLocalDate(startDateSpinner);
+            LocalDate endDate = modifyToLocalDate(endDateSpinner);
 
             habit.setTitle(titleField.getText());
             habit.setDescription(descriptionField.getText());

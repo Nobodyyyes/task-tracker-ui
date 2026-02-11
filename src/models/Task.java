@@ -1,10 +1,12 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import enums.TaskPriority;
 import enums.TaskStatus;
 
 import java.time.LocalDateTime;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Task {
 
     private Long id;
@@ -16,7 +18,6 @@ public class Task {
     private Long userId;
 
     public Task() {
-
     }
 
     public Task(Long id, String title, String description, TaskStatus taskStatus, TaskPriority taskPriority, LocalDateTime dueDate, Long userId) {

@@ -1,20 +1,20 @@
-package panels.habits;
+package panels.tasks.dialogs;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class DeleteHabitDialog extends JDialog {
+public class DeleteTaskDialog extends JDialog {
 
     private boolean confirmed = false;
 
-    public DeleteHabitDialog(Frame owner, String habitTitle) {
+    public DeleteTaskDialog(Frame owner, String taskTitle) {
         super(owner, "Подтверждение удаления", true);
         setSize(350, 180);
         setLocationRelativeTo(owner);
         setLayout(new BorderLayout(10, 10));
 
         JLabel message = new JLabel(
-                "Вы действительно хотите удалить привычку: %s?".formatted(habitTitle),
+                "Вы действительно хотите удалить задачу: %s".formatted(taskTitle),
                 SwingConstants.CENTER
         );
 
@@ -24,22 +24,22 @@ public class DeleteHabitDialog extends JDialog {
         JButton btnConfirm = new JButton("Да");
         JButton btnCancel = new JButton("Отмена");
 
-        JPanel buttons = new JPanel();
-        buttons.add(btnConfirm);
-        buttons.add(btnCancel);
-
-        btnCancel.addActionListener(e -> {
-            confirmed = false;
-            dispose();
-        });
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(btnConfirm);
+        buttonPanel.add(btnCancel);
 
         btnConfirm.addActionListener(e -> {
             confirmed = true;
             dispose();
         });
 
+        btnCancel.addActionListener(e -> {
+            confirmed = false;
+            dispose();
+        });
+
         add(centerPanel, BorderLayout.CENTER);
-        add(buttons, BorderLayout.SOUTH);
+        add(buttonPanel, BorderLayout.SOUTH);
     }
 
     public boolean isConfirmed() {
