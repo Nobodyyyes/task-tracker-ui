@@ -4,6 +4,7 @@ import models.Habit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import panels.habits.CreateHabitDialog;
+import panels.habits.DeleteHabitDialog;
 import panels.habits.HabitPanel;
 import services.HabitService;
 
@@ -53,26 +54,6 @@ public class ActionButtonEditor extends DefaultCellEditor {
         return panel;
     }
 
-    private void deleteHabit() {
-        try {
-            int confirm = JOptionPane.showConfirmDialog(
-                    table,
-                    "Удалить привычку: " + currentHabit.getTitle() + "?",
-                    "Подтверждение",
-                    JOptionPane.YES_NO_OPTION
-            );
-
-            if (confirm == JOptionPane.YES_OPTION) {
-                habitService.deactivateHabit(currentHabit.getId());
-                habitPanel.loadHabits();
-            }
-
-            fireEditingStopped();
-        } catch (Exception e) {
-            log.info("");
-        }
-    }
-
     private void updateHabit() {
         CreateHabitDialog dialog = new CreateHabitDialog(
                 (Frame) SwingUtilities.getWindowAncestor(table),
@@ -82,6 +63,34 @@ public class ActionButtonEditor extends DefaultCellEditor {
         Habit updatedHabit = dialog.showDialog();
         if (updatedHabit != null) {
             habitPanel.loadHabits();
+        }
+
+        fireEditingStopped();
+    }
+
+    private void deleteHabit() {
+        if (currentHabit == null) {
+            JOptionPane.showMessageDialog(table,
+                    "Не удалось определить привычку",
+                    "Ошибка",
+                    JOptionPane.ERROR_MESSAGE);
+            fireEditingStopped();
+        }
+
+        DeleteHabitDialog dialog = new DeleteHabitDialog(
+                (Frame) SwingUtilities.getWindowAncestor(table),
+                currentHabit.getTitle()
+        );
+
+        dialog.setVisible(true);
+
+        if (dialog.isConfirmed()) {
+            try {
+                habitService.deactivateHabit(currentHabit.getId());
+                habitPanel.loadHabits();
+            } catch (Exception e) {
+                log.info("Не удалось удалить привычку");
+            }
         }
 
         fireEditingStopped();
