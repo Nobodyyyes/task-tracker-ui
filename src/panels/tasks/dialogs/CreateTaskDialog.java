@@ -56,12 +56,29 @@ public class CreateTaskDialog extends JDialog {
         panel.add(new JLabel("Дедлайн:"));
         panel.add(dueDateSpinner);
 
-        add(panel, BorderLayout.CENTER);
-
         JButton btnCreate = new JButton("Создать");
+
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(btnCreate);
+
+        add(panel, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
+
+        btnCreate.addActionListener(e -> createTaskProcess(
+                titleField,
+                descriptionField,
+                statusCombo,
+                priorityCombo,
+                dueDateSpinner,
+                taskService));
+    }
+
+    private void createTaskProcess(JTextField titleField,
+                                   JTextArea descriptionField,
+                                   JComboBox<TaskStatus> statusCombo,
+                                   JComboBox<TaskPriority> priorityCombo,
+                                   JSpinner dueDateSpinner,
+                                   TaskService taskService) {
 
         String title = titleField.getText().trim();
         String description = descriptionField.getText().trim();
@@ -72,23 +89,6 @@ public class CreateTaskDialog extends JDialog {
                 java.time.ZoneId.systemDefault()
         );
 
-        btnCreate.addActionListener(e -> createTaskProcess(
-                title,
-                description,
-                taskStatus,
-                taskPriority,
-                dueDate,
-                taskService));
-
-
-    }
-
-    private void createTaskProcess(String title,
-                                   String description,
-                                   TaskStatus taskStatus,
-                                   TaskPriority taskPriority,
-                                   LocalDateTime dueDate,
-                                   TaskService taskService) {
         try {
             Task task = new Task();
             task.setTitle(title);
@@ -107,54 +107,6 @@ public class CreateTaskDialog extends JDialog {
             JOptionPane.showMessageDialog(this, "Ошибка создания задачи: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             log.info("Ошибка создания задачи: {}", ex.getMessage());
         }
-    }
-
-    private void updateTask(String title,
-                            String description,
-                            TaskStatus taskStatus,
-                            TaskPriority taskPriority,
-                            LocalDateTime dueDate,
-                            TaskService taskService) {
-        try {
-            if (createdTask == null) {
-                JOptionPane.showMessageDialog(this,
-                        "Нет задачи для обновления",
-                        "Ошибка",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            if (title.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                        "Название обязательно!",
-                        "Ошибка",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            createdTask.setTitle(title);
-            createdTask.setDescription(description);
-            createdTask.setTaskStatus(taskStatus);
-            createdTask.setTaskPriority(taskPriority);
-            createdTask.setDueDate(dueDate);
-
-            Task updated = taskService.updateTask(createdTask);
-            this.createdTask = updated;
-
-            JOptionPane.showMessageDialog(this, "Задача обновлена!");
-            dispose();
-
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Ошибка обновления задачи: " + ex.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-
-    private void deleteTask() {
-
     }
 
     public Task showDialog() {
