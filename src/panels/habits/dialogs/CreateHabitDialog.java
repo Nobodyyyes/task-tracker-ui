@@ -54,29 +54,27 @@ public class CreateHabitDialog extends JDialog {
         add(panel, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
+        btnCreate.addActionListener(e -> createHabit(titleField, descriptionField, habitFrequencyCombo, startDateSpinner, habitService));
+    }
+
+    private void createHabit(JTextField titleField,
+                             JTextArea descriptionField,
+                             JComboBox<HabitFrequency> habitFrequencyCombo,
+                             JSpinner startDateSpinner,
+                             HabitService habitService) {
+
         String title = titleField.getText();
         String description = descriptionField.getText();
         HabitFrequency habitFrequency = (HabitFrequency) habitFrequencyCombo.getSelectedItem();
-        LocalDateTime startDate = LocalDateTime.ofInstant(
+        LocalDate startDate = LocalDate.from(LocalDateTime.ofInstant(
                 ((java.util.Date) startDateSpinner.getValue()).toInstant(),
                 java.time.ZoneId.systemDefault()
-        );
+        ));
 
-        btnCreate.addActionListener(e -> createHabit(
-                title,
-                description,
-                habitFrequency,
-                startDate.toLocalDate(),
-                LocalDate.now(),
-                habitService));
-    }
-
-    private void createHabit(String title,
-                             String description,
-                             HabitFrequency habitFrequency,
-                             LocalDate startDate,
-                             LocalDate endDate,
-                             HabitService habitService) {
+        LocalDate endDate = LocalDate.from(LocalDateTime.ofInstant(
+                ((java.util.Date) startDateSpinner.getValue()).toInstant(),
+                java.time.ZoneId.systemDefault()
+        ));
 
         try {
             Habit habit = new Habit();
