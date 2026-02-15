@@ -1,6 +1,7 @@
 package panels.habits.dialogs;
 
 import enums.HabitFrequency;
+import enums.Tag;
 import models.Habit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +25,7 @@ public class EditHabitDialog extends JDialog {
     private JComboBox<HabitFrequency> frequencyComboBox;
     private JSpinner startDateSpinner;
     private JSpinner endDateSpinner;
+    private JComboBox<Tag> tagCombo;
 
     public EditHabitDialog(Frame owner, HabitService habitService, Habit habit) {
         super(owner, "Редактирование привычки", true);
@@ -34,21 +36,9 @@ public class EditHabitDialog extends JDialog {
         setLocationRelativeTo(owner);
         setLayout(new BorderLayout());
 
-        JPanel formPanel = new JPanel(new GridLayout(5, 2, 5, 5));
+        JPanel formPanel = new JPanel(new GridLayout(6, 2, 5, 5));
 
-        titleField = new JTextField(habit.getTitle());
-        descriptionField = new JTextArea(habit.getDescription());
-
-        frequencyComboBox = new JComboBox<>(HabitFrequency.values());
-        frequencyComboBox.setSelectedItem(habit.getHabitFrequency());
-
-        startDateSpinner = new JSpinner(new SpinnerDateModel());
-        startDateSpinner.setValue(java.util.Date.from(habit.getStartDate()
-                .atStartOfDay(ZoneId.systemDefault()).toInstant()));
-
-        endDateSpinner = new JSpinner(new SpinnerDateModel());
-        endDateSpinner.setValue(java.util.Date.from(habit.getEndDate()
-                .atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        fieldsBuild();
 
         JButton btnSave = new JButton("Сохранить");
         JButton btnCancel = new JButton("Отмена");
@@ -64,17 +54,43 @@ public class EditHabitDialog extends JDialog {
         btnCancel.addActionListener(e -> dispose());
     }
 
+    private void fieldsBuild() {
+        titleField = new JTextField(habit.getTitle());
+        descriptionField = new JTextArea(habit.getDescription());
+
+        frequencyComboBox = new JComboBox<>(HabitFrequency.values());
+        frequencyComboBox.setSelectedItem(habit.getHabitFrequency());
+
+        startDateSpinner = new JSpinner(new SpinnerDateModel());
+        startDateSpinner.setValue(java.util.Date.from(habit.getStartDate()
+                .atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+        endDateSpinner = new JSpinner(new SpinnerDateModel());
+        endDateSpinner.setValue(java.util.Date.from(habit.getEndDate()
+                .atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+        tagCombo = new JComboBox<>(Tag.values());
+        tagCombo.setSelectedItem(Tag.DEFAULT);
+    }
+
     private JPanel panelSettings(JPanel formPanel) {
         formPanel.add(new JLabel("Название:"));
         formPanel.add(titleField);
+
         formPanel.add(new JLabel("Описание:"));
         formPanel.add(new JScrollPane(descriptionField));
+
         formPanel.add(new JLabel("Периодичность:"));
         formPanel.add(frequencyComboBox);
+
         formPanel.add(new JLabel("Дата начала:"));
         formPanel.add(startDateSpinner);
+
         formPanel.add(new JLabel("Дата конца:"));
         formPanel.add(endDateSpinner);
+
+        formPanel.add(new JLabel("Тэг"));
+        formPanel.add(tagCombo);
 
         return formPanel;
     }
@@ -87,14 +103,17 @@ public class EditHabitDialog extends JDialog {
 
     private void saveChanges() {
         try {
+            HabitFrequency habitFrequency = (HabitFrequency) frequencyComboBox.getSelectedItem();
+            Tag tag = (Tag) tagCombo.getSelectedItem();
             LocalDate startDate = modifyToLocalDate(startDateSpinner);
             LocalDate endDate = modifyToLocalDate(endDateSpinner);
 
             habit.setTitle(titleField.getText());
             habit.setDescription(descriptionField.getText());
-            habit.setHabitFrequency((HabitFrequency) frequencyComboBox.getSelectedItem());
+            habit.setHabitFrequency(habitFrequency);
             habit.setStartDate(startDate);
             habit.setEndDate(endDate);
+            habit.setTag(tag);
 
             habitService.updateHabit(habit);
 

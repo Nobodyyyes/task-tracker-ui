@@ -29,13 +29,13 @@ public class HabitServiceImpl implements HabitService {
     }
 
     @Override
-    public Habit getById(Long habitId) throws Exception {
+    public Habit fetchById(Long habitId) throws Exception {
         String response = ApiClient.get("/habits/%s".formatted(habitId));
         return mapper.readValue(response, Habit.class);
     }
 
     @Override
-    public List<Habit> getAllHabitsByUserId(Long userId) throws Exception {
+    public List<Habit> fetchAllHabitsByUserId(Long userId) throws Exception {
         String response = ApiClient.get("/habits/users/%s".formatted(userId));
         log.info("HABITS RESPONSE = {}", response);
         return mapper.readValue(response, new TypeReference<>() {

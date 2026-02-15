@@ -8,9 +8,9 @@ public interface HabitService {
 
     Habit createHabit(Habit newHabit) throws Exception;
 
-    Habit getById(Long habitId) throws Exception;
+    Habit fetchById(Long habitId) throws Exception;
 
-    List<Habit> getAllHabitsByUserId(Long userId) throws Exception;
+    List<Habit> fetchAllHabitsByUserId(Long userId) throws Exception;
 
     Habit updateHabit(Habit updateHabit) throws Exception;
 

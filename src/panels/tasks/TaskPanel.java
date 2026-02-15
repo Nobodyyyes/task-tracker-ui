@@ -41,7 +41,12 @@ public class TaskPanel extends JPanel {
                         "Тэг",
                         "Действие"
                 }, 0
-        );
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 7;
+            }
+        };;
 
         JTable table = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -54,7 +59,7 @@ public class TaskPanel extends JPanel {
         searchField = new JTextField(15);
 
         JButton btnCreate = new JButton("Создать");
-        JButton btnFilter = new JButton("Поиск");
+        JButton btnSearch = new JButton("Поиск");
 
         JPanel topPanel = new JPanel(new BorderLayout());
 
@@ -65,7 +70,7 @@ public class TaskPanel extends JPanel {
         rightTopPanel.add(new JLabel("Название: "));
         rightTopPanel.add(searchField);
         rightTopPanel.add(tagComboFilter);
-        rightTopPanel.add(btnFilter);
+        rightTopPanel.add(btnSearch);
 
         topPanel.add(leftTopPanel, BorderLayout.WEST);
         topPanel.add(rightTopPanel, BorderLayout.EAST);
@@ -76,7 +81,7 @@ public class TaskPanel extends JPanel {
         loadTasks();
 
         btnCreate.addActionListener(e -> createTask());
-        btnFilter.addActionListener(e -> searchTask());
+        btnSearch.addActionListener(e -> searchTask());
     }
 
     private void tableSettings(JTable table) {

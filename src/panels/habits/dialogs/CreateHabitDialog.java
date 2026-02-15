@@ -1,7 +1,10 @@
 package panels.habits.dialogs;
 
 import enums.HabitFrequency;
+import enums.Tag;
 import models.Habit;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import services.HabitService;
 import utils.CurrentUser;
 
@@ -12,28 +15,65 @@ import java.time.LocalDateTime;
 
 public class CreateHabitDialog extends JDialog {
 
+    private static final Logger log = LogManager.getLogger(CreateHabitDialog.class);
+
+    private final HabitService habitService;
+
     private Habit createdHabit;
+
+    private JTextField titleField;
+    private JTextArea descriptionField;
+    private JComboBox<HabitFrequency> habitFrequencyCombo;
+    private JSpinner startDateSpinner;
+    private JSpinner endDateSpinner;
+    private JComboBox<Tag> tagCombo;
 
     public CreateHabitDialog(Frame parent, HabitService habitService) {
         super(parent, "Создание привычки", true);
+        this.habitService = habitService;
+
         setSize(400, 300);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
 
-        JPanel panel = new JPanel(new GridLayout(5, 2, 10, 10));
+        JPanel panel = new JPanel(new GridLayout(6, 2, 10, 10));
 
-        JTextField titleField = new JTextField();
-        JTextArea descriptionField = new JTextArea(3, 20);
+        fieldsBuild();
+        populatePanel(panel);
 
-        JComboBox<HabitFrequency> habitFrequencyCombo = new JComboBox<>(HabitFrequency.values());
+        JButton btnCreate = new JButton("Создать");
+
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.add(btnCreate);
+
+        add(panel, BorderLayout.CENTER);
+        add(bottomPanel, BorderLayout.SOUTH);
+
+        btnCreate.addActionListener(e -> createHabit());
+    }
+
+    private void fieldsBuild() {
+        titleField = new JTextField();
+        descriptionField = new JTextArea(3, 20);
+
+        habitFrequencyCombo = new JComboBox<>(HabitFrequency.values());
         habitFrequencyCombo.setSelectedItem(HabitFrequency.DAILY);
 
         SpinnerDateModel dateModel = new SpinnerDateModel();
-        JSpinner startDateSpinner = new JSpinner(dateModel);
+        startDateSpinner = new JSpinner(dateModel);
+        endDateSpinner = new JSpinner(dateModel);
 
-        JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(startDateSpinner, "yyyy-MM-dd");
-        startDateSpinner.setEditor(dateEditor);
+        JSpinner.DateEditor startDateEditor = new JSpinner.DateEditor(startDateSpinner, "yyyy-MM-dd");
+        startDateSpinner.setEditor(startDateEditor);
 
+        JSpinner.DateEditor endDateEditor = new JSpinner.DateEditor(endDateSpinner, "yyyy-MM-dd");
+        endDateSpinner.setEditor(endDateEditor);
+
+        tagCombo = new JComboBox<>(Tag.values());
+        tagCombo.setSelectedItem(Tag.DEFAULT);
+    }
+
+    private void populatePanel(JPanel panel) {
         panel.add(new JLabel("Название"));
         panel.add(titleField);
 
@@ -46,22 +86,14 @@ public class CreateHabitDialog extends JDialog {
         panel.add(new JLabel("Дата начала"));
         panel.add(startDateSpinner);
 
-        JButton btnCreate = new JButton("Создать");
+        panel.add(new JLabel("Дата конца"));
+        panel.add(endDateSpinner);
 
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.add(btnCreate);
-
-        add(panel, BorderLayout.CENTER);
-        add(bottomPanel, BorderLayout.SOUTH);
-
-        btnCreate.addActionListener(e -> createHabit(titleField, descriptionField, habitFrequencyCombo, startDateSpinner, habitService));
+        panel.add(new JLabel("Тэг"));
+        panel.add(tagCombo);
     }
 
-    private void createHabit(JTextField titleField,
-                             JTextArea descriptionField,
-                             JComboBox<HabitFrequency> habitFrequencyCombo,
-                             JSpinner startDateSpinner,
-                             HabitService habitService) {
+    private void createHabit() {
 
         String title = titleField.getText();
         String description = descriptionField.getText();
@@ -72,9 +104,10 @@ public class CreateHabitDialog extends JDialog {
         ));
 
         LocalDate endDate = LocalDate.from(LocalDateTime.ofInstant(
-                ((java.util.Date) startDateSpinner.getValue()).toInstant(),
+                ((java.util.Date) endDateSpinner.getValue()).toInstant(),
                 java.time.ZoneId.systemDefault()
         ));
+        Tag tag = (Tag) tagCombo.getSelectedItem();
 
         try {
             Habit habit = new Habit();
@@ -84,6 +117,7 @@ public class CreateHabitDialog extends JDialog {
             habit.setStartDate(startDate);
             habit.setEndDate(endDate);
             habit.setUserId(CurrentUser.getId());
+            habit.setTag(tag);
 
             createdHabit = habitService.createHabit(habit);
 

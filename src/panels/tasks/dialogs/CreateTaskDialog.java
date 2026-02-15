@@ -18,6 +18,8 @@ public class CreateTaskDialog extends JDialog {
 
     private static final Logger log = LogManager.getLogger(CreateTaskDialog.class);
 
+    private final TaskService taskService;
+
     private Task createdTask;
 
     private JTextField titleField;
@@ -29,6 +31,8 @@ public class CreateTaskDialog extends JDialog {
 
     public CreateTaskDialog(Frame parent, TaskService taskService) {
         super(parent, "Создание задачи", true);
+        this.taskService = taskService;
+
         setSize(400, 300);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
@@ -46,13 +50,7 @@ public class CreateTaskDialog extends JDialog {
         add(panel, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        btnCreate.addActionListener(e -> createTaskProcess(
-                titleField,
-                descriptionField,
-                statusCombo,
-                priorityCombo,
-                dueDateSpinner,
-                taskService));
+        btnCreate.addActionListener(e -> createTaskProcess());
     }
 
     private void fieldsBuild() {
@@ -95,12 +93,7 @@ public class CreateTaskDialog extends JDialog {
         panel.add(tagCombo);
     }
 
-    private void createTaskProcess(JTextField titleField,
-                                   JTextArea descriptionField,
-                                   JComboBox<TaskStatus> statusCombo,
-                                   JComboBox<TaskPriority> priorityCombo,
-                                   JSpinner dueDateSpinner,
-                                   TaskService taskService) {
+    private void createTaskProcess() {
 
         String title = titleField.getText().trim();
         String description = descriptionField.getText().trim();

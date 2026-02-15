@@ -1,6 +1,7 @@
 package models;
 
 import enums.HabitFrequency;
+import enums.Tag;
 
 import java.time.LocalDate;
 
@@ -14,11 +15,12 @@ public class Habit {
     private LocalDate endDate;
     private boolean active;
     private Long userId;
+    private Tag tag;
 
     public Habit() {
     }
 
-    public Habit(Long id, String title, String description, HabitFrequency habitFrequency, LocalDate startDate, LocalDate endDate, boolean active, Long userId) {
+    public Habit(Long id, String title, String description, HabitFrequency habitFrequency, LocalDate startDate, LocalDate endDate, boolean active, Long userId, Tag tag) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -27,6 +29,7 @@ public class Habit {
         this.endDate = endDate;
         this.active = active;
         this.userId = userId;
+        this.tag = tag;
     }
 
     public Long getId() {
@@ -91,5 +94,13 @@ public class Habit {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Tag getTag() {
+        return tag;
+    }
+
+    public void setTag(Tag tag) {
+        this.tag = tag;
     }
 }

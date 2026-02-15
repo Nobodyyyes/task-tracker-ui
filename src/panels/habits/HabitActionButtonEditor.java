@@ -46,7 +46,7 @@ public class HabitActionButtonEditor extends DefaultCellEditor {
 
         try {
             Long habitId = (Long) table.getValueAt(row, 0);
-            currentHabit = habitService.getById(habitId);
+            currentHabit = habitService.fetchById(habitId);
         } catch (Exception e) {
             log.info("Не знаю что за ошибка...");
         }
