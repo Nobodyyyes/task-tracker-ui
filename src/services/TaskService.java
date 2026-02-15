@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface TaskService {
 
-    List<Task> getAllTasksByUserId(Long userId) throws Exception;
+    List<Task> fetchAllTasksByUserId(Long userId) throws Exception;
 
-    Task getByTaskId(Long taskId) throws Exception;
+    Task fetchByTaskId(Long taskId) throws Exception;
 
     Task createTask(Task newTask) throws Exception;
 

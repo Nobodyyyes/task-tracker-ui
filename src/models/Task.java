@@ -1,10 +1,11 @@
 package models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import enums.Tag;
 import enums.TaskPriority;
 import enums.TaskStatus;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Task {
@@ -14,13 +15,14 @@ public class Task {
     private String description;
     private TaskStatus taskStatus;
     private TaskPriority taskPriority;
-    private LocalDateTime dueDate;
+    private LocalDate dueDate;
     private Long userId;
+    private Tag tag;
 
     public Task() {
     }
 
-    public Task(Long id, String title, String description, TaskStatus taskStatus, TaskPriority taskPriority, LocalDateTime dueDate, Long userId) {
+    public Task(Long id, String title, String description, TaskStatus taskStatus, TaskPriority taskPriority, LocalDate dueDate, Long userId, Tag tag) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -28,6 +30,7 @@ public class Task {
         this.taskPriority = taskPriority;
         this.dueDate = dueDate;
         this.userId = userId;
+        this.tag = tag;
     }
 
     public Long getId() {
@@ -70,11 +73,11 @@ public class Task {
         this.taskPriority = taskPriority;
     }
 
-    public LocalDateTime getDueDate() {
+    public LocalDate getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(LocalDateTime dueDate) {
+    public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -84,5 +87,13 @@ public class Task {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Tag getTag() {
+        return tag;
+    }
+
+    public void setTag(Tag tag) {
+        this.tag = tag;
     }
 }

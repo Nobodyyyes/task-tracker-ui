@@ -23,7 +23,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getAllTasksByUserId(Long userId) throws Exception {
+    public List<Task> fetchAllTasksByUserId(Long userId) throws Exception {
         return mapper.readValue(
                 ApiClient.get("/tasks/users/%s".formatted(userId)),
                 new TypeReference<>() {
@@ -31,7 +31,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task getByTaskId(Long taskId) throws Exception {
+    public Task fetchByTaskId(Long taskId) throws Exception {
         String response = ApiClient.get("/tasks/%s".formatted(taskId));
         return mapper.readValue(response, Task.class);
     }

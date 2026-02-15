@@ -1,7 +1,22 @@
 package enums;
 
 public enum TaskPriority {
-    LOW,
-    MEDIUM,
-    HIGH
+    LOW("Низкий"),
+    MEDIUM("Средний"),
+    HIGH("Высокий");
+
+    private final String description;
+
+    TaskPriority(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public String toString() {
+        return description;
+    }
 }

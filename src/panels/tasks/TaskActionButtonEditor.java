@@ -46,7 +46,7 @@ public class TaskActionButtonEditor extends DefaultCellEditor {
 
         try {
             Long taskId = (Long) table.getValueAt(row, 0);
-            currentTask = taskService.getByTaskId(taskId);
+            currentTask = taskService.fetchByTaskId(taskId);
         } catch (Exception e) {
             log.info("Не знаю что за ошибка...");
         }
